@@ -26,6 +26,6 @@ jobs:
           pip install pytest
       - name: Run Tests
         run: |
-          /home/runner/.local/bin/pytest test/
+          pytest test/
         env:
           PYTHONPATH: .
