@@ -4,9 +4,17 @@ import pytest
 
 from src.tarsafe import TarSafe, TarSafeException
 
-def test_all_files():
-    files = os.listdir("./test/data")
+def test_bad_files():
+    files = os.listdir("./test/data/bad")
     for file_ in files:
         with pytest.raises(TarSafeException) as ex:
-            with TarSafe.open(f"./test/data/{file_}", "r") as tar:
+            with TarSafe.open(f"./test/data/bad/{file_}", "r") as tar:
                 tar.extractall()
+
+def test_good_files():
+    files = os.listdir("./test/data/good")
+    for file_ in files:
+        with TarSafe.open(f"./test/data/good/{file_}", "r") as tar:
+            tar.extractall()
+        assert os.path.exists("./evil.sh")
+        os.remove("./evil.sh")
