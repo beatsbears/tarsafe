@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "tarsafe"
+version = "0.0.2"
+description = "A safe subclass of the TarFile class for interacting with tar files. Can be used as a direct drop-in replacement for safe usage of extractall()"
+authors = ["Andrew Scott <a.clayton.scott@gmail.com>"]
+license= "MIT License"
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
