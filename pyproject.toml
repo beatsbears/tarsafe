@@ -4,6 +4,8 @@ version = "0.0.2"
 description = "A safe subclass of the TarFile class for interacting with tar files. Can be used as a direct drop-in replacement for safe usage of extractall()"
 authors = ["Andrew Scott <a.clayton.scott@gmail.com>"]
 license= "MIT License"
+readme = "README.md"
+exclude = ["test/*"]
 
 [tool.poetry.dependencies]
 python = ">=3.6"
