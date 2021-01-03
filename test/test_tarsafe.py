@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 
-from src.tarsafe import TarSafe, TarSafeException
+from tarsafe import TarSafe, TarSafeException
 
 def test_bad_files():
     files = os.listdir("./test/data/bad")
