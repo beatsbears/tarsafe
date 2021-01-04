@@ -18,3 +18,11 @@ def test_good_files():
             tar.extractall()
         assert os.path.exists("./evil.sh")
         os.remove("./evil.sh")
+
+def test_good_file():
+    files = os.listdir("./test/data/good")
+    for file_ in files:
+        with TarSafe.open(f"./test/data/good/{file_}", "r") as tar:
+            tar.extract("evil.sh")
+        assert os.path.exists("./evil.sh")
+        os.remove("./evil.sh")

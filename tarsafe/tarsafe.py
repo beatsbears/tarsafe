@@ -14,6 +14,13 @@ class TarSafe(tarfile.TarFile):
     def open(cls, name=None, mode="r", fileobj=None, bufsize=tarfile.RECORDSIZE, **kwargs):
         return super().open(name, mode, fileobj, bufsize, **kwargs)
 
+    def extract(self, member, path="", set_attrs=True, *, numeric_owner=False):
+        """
+        Override the parent extract method and add safety checks.
+        """
+        self._safetar_check()
+        super().extract(member, path, set_attrs=set_attrs, numeric_owner=numeric_owner)
+
     def extractall(self, path=".", members=None, numeric_owner=False):
         """
         Override the parent extractall method and add safety checks.
