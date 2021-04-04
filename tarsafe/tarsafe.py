@@ -69,3 +69,5 @@ class TarSafe(tarfile.TarFile):
 
 class TarSafeException(Exception):
     pass
+
+open = TarSafe.open
