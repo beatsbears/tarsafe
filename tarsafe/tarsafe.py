@@ -1,11 +1,27 @@
+"""
+tarsafe module is a more secure drop-in replacement for tarfile module.
+
+We expose everything tarfile does, but some methods are overridden to add
+safety features.
+"""
+
 import os
 import pathlib
 import tarfile
+from tarfile import *  # noqa: F401, F403
+
+
+__all__ = tarfile.__all__ + [
+    "TarSafe",
+    "TarSafeException",
+]
+
 
 class TarSafe(tarfile.TarFile):
     """
     A safe subclass of the TarFile class for interacting with tar files.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.directory = os.getcwd()
@@ -63,11 +79,17 @@ class TarSafe(tarfile.TarFile):
             if not os.path.abspath(os.path.join(self.directory, link_file)).startswith(self.directory):
                 return True
         return False
-    
+
     def _is_device(self, tarinfo):
         return tarinfo.ischr() or tarinfo.isblk()
 
+
 class TarSafeException(Exception):
     pass
+
+
+class TarFile(TarSafe):
+    """Override of tarfile.TarFile to maintain compatibility."""
+
 
 open = TarSafe.open
