@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.4
+- Expose all tarfile members in tarsafe module
+
 ## 0.0.3
 - Added `TarFile.open()` shortcut functionality
 
