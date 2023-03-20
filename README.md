@@ -10,11 +10,14 @@ $ pip install tarsafe
 
 ## Usage
 ```
-import sys
-
 from tarsafe import TarSafe
 
-tar = TarSafe.open(sys.argv[1], "r")
+tar = TarSafe.open("example.tar", "r")
 tar.extractall()
 tar.close()
+
+# OR
+
+with TarSafe.open("example.tar", "r") as tar:
+    tar.extractall()
 ```
