@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.5
+- Perf improvement for deeply nested archives and fix to TarFile signature
+
 ## 0.0.4
 - Expose all tarfile members in tarsafe module
 
