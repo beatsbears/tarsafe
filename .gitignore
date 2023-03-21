@@ -4,3 +4,4 @@ PipFile*
 *egg-info*
 dist/
 build/
+*.pyc

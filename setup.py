@@ -14,6 +14,7 @@ setup(
     version=__version__,
     description='A safe subclass of the TarFile class for interacting with tar files. Can be used as a direct drop-in replacement for safe usage of extractall()',
     long_description=long_description,
+    long_description_content_type='text/plain',
     author='Andrew Scott',
     url='https://github.com/beatsbears/tarsafe',
     packages=find_packages(exclude=['tests*']),

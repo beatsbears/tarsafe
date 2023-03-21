@@ -6,8 +6,8 @@ safety features.
 """
 
 import os
-import pathlib
 import tarfile
+from pathlib import Path
 from tarfile import *  # noqa: F401, F403
 
 
@@ -58,24 +58,27 @@ class TarSafe(tarfile.TarFile):
                     raise TarSafeException(f"Attempted directory traversal via link for member: {tarinfo.linkname}")
                 if self._is_device(tarinfo=tarinfo):
                     raise TarSafeException(f"tarfile returns true for isblk() or ischr()")
-        except Exception as err:
+        except Exception:
             raise
 
     def _is_traversal_attempt(self, tarinfo):
-        if not os.path.abspath(os.path.join(self.directory, tarinfo.name)).startswith(self.directory):
-            return True
+        # Adding this additional simple qualifier that the path seems suspect in order to avoid expensive
+        # path normalization when testing deeply nested archives
+        if tarinfo.name.startswith(os.sep) or ".." in tarinfo.name:
+            if not os.path.abspath(os.path.join(self.directory, tarinfo.name)).startswith(self.directory):
+                return True
         return False
 
     def _is_unsafe_symlink(self, tarinfo):
         if tarinfo.issym():
-            symlink_file = pathlib.Path(os.path.normpath(os.path.join(self.directory, tarinfo.linkname)))
+            symlink_file = Path(os.path.normpath(os.path.join(self.directory, tarinfo.linkname)))
             if not os.path.abspath(os.path.join(self.directory, symlink_file)).startswith(self.directory):
                 return True
         return False
 
     def _is_unsafe_link(self, tarinfo):
         if tarinfo.islnk():
-            link_file = pathlib.Path(os.path.normpath(os.path.join(self.directory, tarinfo.linkname)))
+            link_file = Path(os.path.normpath(os.path.join(self.directory, tarinfo.linkname)))
             if not os.path.abspath(os.path.join(self.directory, link_file)).startswith(self.directory):
                 return True
         return False
