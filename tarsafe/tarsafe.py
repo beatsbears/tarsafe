@@ -37,11 +37,14 @@ class TarSafe(tarfile.TarFile):
         self._safetar_check()
         super().extract(member, path, set_attrs=set_attrs, numeric_owner=numeric_owner)
 
-    def extractall(self, path=".", members=None, *, numeric_owner=False):
-        """
-        Override the parent extractall method and add safety checks.
-        """
+    def extractall(self, path=".", members=None, numeric_owner=False):
         self._safetar_check()
+        # Normalize paths inside members
+        if members is None:
+            members = self.getmembers()
+        for member in members:
+            # Fix member.name to use os.sep (Windows backslash) instead of forward slash
+            member.name = member.name.replace('/', os.sep)
         super().extractall(path, members, numeric_owner=numeric_owner)
 
     def _safetar_check(self):
