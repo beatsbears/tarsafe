@@ -21,3 +21,6 @@ tar.close()
 with TarSafe.open("example.tar", "r") as tar:
     tar.extractall()
 ```
+
+## Note on Python 3.12+
+As of Python 3.12, the standard library's `tarfile` has built-in extraction filters ([PEP 706](https://peps.python.org/pep-0706/)) that cover this same class of vulnerability. If you're only targeting 3.12+, `tarfile.TarFile.extractall(..., filter="data")` (or `filter="tar"`) may be a lighter-weight alternative to this library. Tarsafe still supports Python 3.6+, so it remains useful when you need safe extraction on older versions.
