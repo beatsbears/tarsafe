@@ -5,6 +5,7 @@ We expose everything tarfile does, but some methods are overridden to add
 safety features.
 """
 
+import ntpath
 import os
 import tarfile
 from tarfile import *  # noqa: F401, F403
@@ -68,12 +69,32 @@ class TarSafe(tarfile.TarFile):
 
     def _is_traversal_attempt(self, tarinfo, root):
         # Adding this additional simple qualifier that the path seems suspect in order to avoid expensive
-        # path normalization when testing deeply nested archives
-        if tarinfo.name.startswith(os.sep) or ".." in tarinfo.name:
+        # path normalization when testing deeply nested archives.
+        if self._looks_suspicious(tarinfo.name):
             resolved = os.path.abspath(os.path.join(root, tarinfo.name))
             if not self._is_contained(root, resolved):
                 return True
         return False
+
+    @staticmethod
+    def _looks_suspicious(name):
+        """
+        Cheap pre-filter for _is_traversal_attempt: True if `name` merits the more
+        expensive containment check.
+
+        Tar member names always use "/" per the tar spec (GNU tar, POSIX.1-2001)
+        regardless of host OS, so checking only os.sep misses "/..." names on
+        Windows, where os.sep is "\\" -- os.path.join then treats a leading "/"
+        as drive-relative and it lands outside the extraction root with no check
+        ever running. Also catch a bare drive-letter prefix (e.g. "C:/x"), which
+        os.path.join/ntpath.join likewise treat as an absolute, drive-relative
+        path on Windows.
+        """
+        return (
+            name.startswith(("/", "\\"))
+            or ".." in name
+            or bool(ntpath.splitdrive(name)[0])
+        )
 
     def _is_unsafe_symlink(self, tarinfo, root):
         if tarinfo.issym():

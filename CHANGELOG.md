@@ -1,7 +1,7 @@
 # Change Log
 
 ## 0.0.6
-- Fixed a directory traversal vulnerability reported by Shakir Mahmood Shakir ([@drengir1](https://github.com/drengir1)).
+- Fixed a directory traversal vulnerability  and a related Windows-only traversal gap, both reported by Shakir Mahmood Shakir ([@drengir1](https://github.com/drengir1)).
 
 ## 0.0.5
 - Perf improvement for deeply nested archives and fix to TarFile signature

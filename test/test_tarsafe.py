@@ -164,5 +164,35 @@ def test_extractall_checks_the_actual_target_path(tmp_path):
     assert not (tmp_path / "uploads-secret").exists()
 
 
+@pytest.mark.parametrize(
+    "name",
+    [
+        "/tmp/x.txt",
+        "\\tmp\\x.txt",
+        "C:/tmp/x.txt",
+        "C:\\tmp\\x.txt",
+        "../evil.txt",
+    ],
+)
+def test_looks_suspicious_flags_windows_absolute_paths(name):
+    """
+    Regression test for a Windows-only gap in the cheap pre-filter that gates
+    the (expensive) containment check in _is_traversal_attempt. The old
+    condition was `name.startswith(os.sep) or ".." in name`. Tar member names
+    always use "/" regardless of host OS, but os.sep is "\\" on Windows, so a
+    member named e.g. "/tmp/x.txt" never tripped the pre-filter there, the
+    containment check never ran, and os.path.join treated the leading "/" as
+    drive-relative -- landing outside the extraction root. This test exercises
+    the OS-independent predicate directly so it's verifiable without a real
+    Windows host.
+    """
+    assert TarSafe._looks_suspicious(name) is True
+
+
+def test_looks_suspicious_allows_plain_relative_names():
+    assert TarSafe._looks_suspicious("safe.txt") is False
+    assert TarSafe._looks_suspicious("dir/safe.txt") is False
+
+
 def _get_exposed_members(module):
     return set(module.__all__)
